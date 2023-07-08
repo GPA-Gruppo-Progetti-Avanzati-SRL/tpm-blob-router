@@ -10,6 +10,8 @@ import (
 type Pipeline struct {
 	Id            string            `mapstructure:"id,omitempty" yaml:"id,omitempty" json:"id,omitempty"`
 	Description   string            `mapstructure:"description,omitempty" yaml:"description,omitempty" json:"description,omitempty"`
+	ExitOnNop     bool              `mapstructure:"exit-on-nop" yaml:"exit-on-nop" json:"exit-on-nop"`
+	ExitOnErr     bool              `mapstructure:"exit-on-err" yaml:"exit-on-err" json:"exit-on-err"`
 	Activities    []Configurable    `json:"-" yaml:"activities"`
 	RawActivities []json.RawMessage `json:"activities" yaml:"-"`
 }

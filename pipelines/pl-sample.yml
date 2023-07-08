@@ -1,0 +1,27 @@
+id: sample-pipeline
+description: sample pipeline
+exit-on-nop: false
+exit-on-err: false
+activities:
+  - activity:
+      name: echo-activity
+      type: echo-activity
+      description: test echo activity
+    message: hello echo activity
+  - activity:
+      name: source-activity
+      type: source-activity
+      description: test source activity
+    storage-name: default
+    mode: tag
+    tag:
+      name: status
+      values:
+        - id: ready
+          value: ready
+    paths:
+      - container: lks-container
+        pattern: ^(?:[A-Za-z0-9]*/)?([A-Za-z0-9]{1,6})_([0-9]{4}\-[0-9]{2}\-[0-9]{2}_[0-9]{2}\.[0-9]{2}\.[0-9]{2})_(CVM2LEAS).csv$
+        id: cvm2leas-pattern
+    tick-interval: 5s
+    download-path: /tmp

@@ -1,0 +1,59 @@
+log:
+  level: -1
+  enablejson: false
+
+config:
+
+  # HostName used to generate a unique transaction-id for kafka producer
+  host-name: ${HOSTNAME}
+
+  http:
+    bind-address: localhost
+    port: 8084
+    shutdown-timeout: 400ms
+    static-content:
+      - url-prefix: /static
+        indexes: false
+        document-root: /Users/marioa.imperato
+
+    #    html-content: /templates/*
+
+    server-context:
+      path: /api
+      context:
+        sys-metrics-endpoint: /metrics
+        api-key: ${LEAS_CAB_BLOBPROC_APIKEY}
+    mw-use:
+      - mw-metrics
+      - mw-tracing
+      - mw-error
+
+  mw-handler-registry:
+    mw-metrics:
+      namespace: tpm
+      subsystem: blob_router
+    mw-tracing:
+    mw-error:
+      disclose-error-info: true
+
+  blob-router-loader:
+    type: disk
+    folder-path: ./pipelines
+
+  linked-services:
+    cosmos-db:
+      - cos-name: default
+        endpoint: "${LEAS_CAB_COSDB_ENDPOINT}"
+        account-key: "${LEAS_CAB_COSDB_ACCTKEY}"
+        db:
+          id: "leas_cab_db"
+          name: "${LEAS_CAB_COSDB_DBNAME}"
+        collections:
+          - id: leas-cab-files
+            name: tokens
+    blob-storage:
+      - name: test
+        account: ${LEAS_CAB_STG_ACCTNAME}
+        auth-mode: account-key
+        account-key: ${LEAS_CAB_STG_ACCTKEY}
+

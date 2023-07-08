@@ -5,11 +5,13 @@ import (
 	"github.com/stretchr/testify/require"
 	"io/fs"
 	"os"
+	"regexp"
 	"testing"
 )
 
 const (
 	EchoActivityName          = "echo-activity"
+	SourceActivityName        = "source-activity"
 	OrchestrationYAMLFileName = "tpm-blob-router-pipeline.yml"
 )
 
@@ -18,11 +20,34 @@ var cfgOrc config.Pipeline
 func SetUpPipeline(t *testing.T) {
 	ea := config.NewEchoActivity().WithName(EchoActivityName).WithDescription("test echo activity").WithMessage("hello echo activity")
 
+	sa := config.NewSourceActivity().WithName(SourceActivityName).WithDescription("test source activity")
+	sa.StorageName = "default"
+	sa.Mode = config.ModeTag
+	sa.Tag = config.Tag{
+		Name: "status",
+		Values: []config.TagValue{
+			{
+				Value: "ready",
+				Id:    config.TagValueReady,
+			},
+		},
+	}
+	sa.Paths = []config.Path{
+		{
+			Id:          "cvm2leas-pattern",
+			Container:   "lks-container",
+			NamePattern: "^(?:[A-Za-z0-9]*/)?([A-Za-z0-9]{1,6})_([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}_[0-9]{2}\\.[0-9]{2}\\.[0-9]{2})_(CVM2LEAS).csv$",
+			Regexp:      regexp.MustCompile("^(?:[A-Za-z0-9]*/)?([A-Za-z0-9]{1,6})_([0-9]{4}\\-[0-9]{2}\\-[0-9]{2}_[0-9]{2}\\.[0-9]{2}\\.[0-9]{2})_(CVM2LEAS).csv$"),
+		},
+	}
+	sa.TickInterval = "5s"
+	sa.DownloadPath = "/tmp"
+
 	cfgOrc = config.Pipeline{
 		Id:          "sample-pipeline",
 		Description: "sample pipeline",
 		Activities: []config.Configurable{
-			ea,
+			ea, sa,
 		},
 	}
 }

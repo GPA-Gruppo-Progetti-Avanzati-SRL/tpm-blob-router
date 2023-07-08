@@ -31,7 +31,8 @@ type Configurable interface {
 }
 
 var activityTypeRegistry = map[Type]ActivityTypeRegistryEntry{
-	EchoActivityType: {Tp: EchoActivityType, UnmarshallFromJSON: NewEchoActivityFromJSON, UnmarshalFromYAML: NewEchoActivityFromYAML},
+	EchoActivityType:   {Tp: EchoActivityType, UnmarshallFromJSON: NewEchoActivityFromJSON, UnmarshalFromYAML: NewEchoActivityFromYAML},
+	SourceActivityType: {Tp: SourceActivityType, UnmarshallFromJSON: NewSourceActivityFromJSON, UnmarshalFromYAML: NewSourceActivityFromYAML},
 }
 
 func NewActivityFromJSON(t Type, message json.RawMessage) (Configurable, error) {
