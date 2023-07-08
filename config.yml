@@ -9,7 +9,7 @@ config:
 
   http:
     bind-address: localhost
-    port: 8084
+    port: 8086
     shutdown-timeout: 400ms
     static-content:
       - url-prefix: /static
